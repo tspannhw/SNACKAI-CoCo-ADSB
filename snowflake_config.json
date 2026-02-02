@@ -1,0 +1,12 @@
+{
+  "user": "STREAMING_USER",
+  "account": "HOST-AWS1",
+  "url": "https://AWS1.snowflakecomputing.com",
+  "pat": "PUTYOURPATSTRINGHERE",
+  "role": "CUSTOMROLE",
+  "database": "DEMO-FAKE",
+  "schema": "DEMO-FAKE-NOTREALNAME",
+  "table": "ADSB_AIRCRAFT_DATA",
+  "pipe": "ADSB_AIRCRAFT_PIPE",
+  "channel_name": "ADSB_CHNL"
+}
