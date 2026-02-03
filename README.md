@@ -187,7 +187,24 @@ WHERE squawk IN ('7500', '7600', '7700')
 ORDER BY datetimestamp DESC;
 ```
 
-## Environment Variables
+### Streamlit App
+
+https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/streamlit.app
+
+![dashboard](https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/dashboard1.png?raw=true)
+![dashboard](https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/dashboard2.png?raw=true)
+![dashboard](https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/dashboard3.png?raw=true)
+![dashboard](https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/dashboard4.png?raw=true)
+![dashboard](https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/dashboard5.png?raw=true)
+
+
+
+### AI Semantic View
+
+https://github.com/tspannhw/SNACKAI-CoCo-ADSB/blob/main/svadsbaircraft.yaml
+
+
+### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
