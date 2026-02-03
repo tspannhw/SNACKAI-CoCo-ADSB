@@ -1,0 +1,379 @@
+name: SVADSBAIRCRAFT
+description: >
+  Semantic view for ADS-B aircraft tracking data analysis. Supports questions about 
+  aircraft positions, flight status, emergency conditions, altitude and speed analytics,
+  and current aircraft whereabouts.
+
+tables:
+  - name: ADSB_AIRCRAFT
+    base_table:
+      database: DEMO
+      schema: DEMO
+      table: ADSB_AIRCRAFT_DATA
+    description: >
+      Real-time ADS-B aircraft tracking data including position, altitude, speed, 
+      heading, flight identification, and emergency status.
+    
+    dimensions:
+      - name: uuid
+        expr: UUID
+        description: Unique identifier for each aircraft observation record
+        data_type: VARCHAR
+        
+      - name: icao_hex
+        expr: ICAO_HEX
+        description: ICAO 24-bit aircraft transponder address in hexadecimal format - uniquely identifies each aircraft
+        data_type: VARCHAR
+        synonyms:
+          - aircraft id
+          - transponder code
+          - mode s code
+          
+      - name: flight
+        expr: FLIGHT
+        description: Flight number or callsign (e.g., UAL123, AAL456)
+        data_type: VARCHAR
+        synonyms:
+          - flight number
+          - callsign
+          - flight callsign
+          
+      - name: registration
+        expr: REGISTRATION
+        description: Aircraft tail number/registration
+        data_type: VARCHAR
+        synonyms:
+          - tail number
+          - n number
+          
+      - name: aircraft_type
+        expr: AIRCRAFT_TYPE
+        description: ICAO aircraft type designator (e.g., B738, A320)
+        data_type: VARCHAR
+        synonyms:
+          - plane type
+          - aircraft model
+          
+      - name: aircraft_description
+        expr: DESCRIPTION
+        description: Human readable aircraft description
+        data_type: VARCHAR
+        
+      - name: squawk
+        expr: SQUAWK
+        description: Four-digit transponder squawk code set by pilot (e.g., 7700=emergency, 7600=radio failure, 7500=hijack)
+        data_type: VARCHAR
+        synonyms:
+          - squawk code
+          - transponder squawk
+          
+      - name: category
+        expr: CATEGORY
+        description: ADS-B aircraft category (A1=Light, A2=Small, A3=Large, A4=High-vortex, A5=Heavy, B1-B7=various)
+        data_type: VARCHAR
+        synonyms:
+          - aircraft category
+          - size category
+          
+      - name: emergency
+        expr: EMERGENCY
+        description: Emergency status indicator (none, general, lifeguard, minfuel, nordo, unlawful, downed, reserved)
+        data_type: VARCHAR
+        synonyms:
+          - emergency status
+          - emergency type
+          
+      - name: hostname
+        expr: HOSTNAME
+        description: Name of the ADS-B receiver host
+        data_type: VARCHAR
+        
+      - name: receiver_host
+        expr: RECEIVER_HOST
+        description: Receiver host identifier
+        data_type: VARCHAR
+        
+      - name: receiver_ip
+        expr: RECEIVER_IP
+        description: IP address of the ADS-B receiver
+        data_type: VARCHAR
+        
+      - name: observation_timestamp
+        expr: DATETIMESTAMP
+        description: Timestamp when this aircraft observation was recorded
+        data_type: TIMESTAMP
+        synonyms:
+          - timestamp
+          - observation time
+          - record time
+
+    time_dimensions:
+      - name: observation_date
+        expr: DATETIMESTAMP
+        description: Date and time of the aircraft observation
+        data_type: TIMESTAMP
+        synonyms:
+          - date
+          - time
+          - when
+          - observation time
+          
+      - name: ingestion_timestamp
+        expr: INGESTION_TIMESTAMP
+        description: Timestamp when the record was ingested into Snowflake
+        data_type: TIMESTAMP
+
+    measures:
+      - name: latitude
+        expr: LATITUDE
+        description: Aircraft latitude position in decimal degrees (-90 to 90)
+        data_type: NUMBER
+        synonyms:
+          - lat
+          
+      - name: longitude
+        expr: LONGITUDE
+        description: Aircraft longitude position in decimal degrees (-180 to 180)
+        data_type: NUMBER
+        synonyms:
+          - lon
+          - lng
+          
+      - name: altitude_baro
+        expr: ALTITUDE_BARO
+        description: Barometric altitude in feet above sea level
+        data_type: NUMBER
+        default_aggregation: avg
+        synonyms:
+          - altitude
+          - barometric altitude
+          - flight level
+          
+      - name: altitude_geom
+        expr: ALTITUDE_GEOM
+        description: Geometric (GPS) altitude in feet
+        data_type: NUMBER
+        default_aggregation: avg
+        synonyms:
+          - gps altitude
+          - geometric altitude
+          
+      - name: ground_speed
+        expr: GROUND_SPEED
+        description: Ground speed in knots
+        data_type: NUMBER
+        default_aggregation: avg
+        synonyms:
+          - speed
+          - velocity
+          
+      - name: track
+        expr: TRACK
+        description: Track angle (direction of travel) in degrees from true north (0-360)
+        data_type: NUMBER
+        synonyms:
+          - heading
+          - direction
+          - course
+          
+      - name: true_heading
+        expr: TRUE_HEADING
+        description: True heading of the aircraft in degrees
+        data_type: NUMBER
+        
+      - name: mag_heading
+        expr: MAG_HEADING
+        description: Magnetic heading of the aircraft in degrees
+        data_type: NUMBER
+        synonyms:
+          - magnetic heading
+          
+      - name: indicated_airspeed
+        expr: INDICATED_AIRSPEED
+        description: Indicated airspeed (IAS) in knots
+        data_type: NUMBER
+        synonyms:
+          - ias
+          
+      - name: true_airspeed
+        expr: TRUE_AIRSPEED
+        description: True airspeed (TAS) in knots
+        data_type: NUMBER
+        synonyms:
+          - tas
+          
+      - name: mach
+        expr: MACH
+        description: Mach number (ratio of speed to speed of sound)
+        data_type: NUMBER
+        synonyms:
+          - mach number
+          
+      - name: vertical_rate
+        expr: VERTICAL_RATE
+        description: Vertical rate of climb/descent in feet per minute (positive=climbing, negative=descending)
+        data_type: NUMBER
+        default_aggregation: avg
+        synonyms:
+          - climb rate
+          - descent rate
+          - vsi
+          
+      - name: vertical_rate_geom
+        expr: VERTICAL_RATE_GEOM
+        description: Geometric vertical rate in feet per minute
+        data_type: NUMBER
+        
+      - name: nav_altitude
+        expr: NAV_ALTITUDE
+        description: Selected/target altitude from autopilot/FMS in feet
+        data_type: NUMBER
+        synonyms:
+          - target altitude
+          - selected altitude
+          
+      - name: nav_heading
+        expr: NAV_HEADING
+        description: Selected heading from autopilot/FMS in degrees
+        data_type: NUMBER
+        
+      - name: nav_qnh
+        expr: NAV_QNH
+        description: Altimeter setting (QNH) in millibars/hectopascals
+        data_type: NUMBER
+        synonyms:
+          - altimeter setting
+          - barometric pressure
+          
+      - name: rssi
+        expr: RSSI
+        description: Received signal strength indicator in dBFS (decibels relative to full scale)
+        data_type: NUMBER
+        synonyms:
+          - signal strength
+          
+      - name: messages
+        expr: MESSAGES
+        description: Number of ADS-B messages received in this observation window
+        data_type: NUMBER
+        default_aggregation: sum
+        
+      - name: seen
+        expr: SEEN
+        description: Seconds since last message was received from this aircraft
+        data_type: NUMBER
+        
+      - name: seen_pos
+        expr: SEEN_POS
+        description: Seconds since last position update was received
+        data_type: NUMBER
+        
+      - name: total_messages
+        expr: TOTAL_MESSAGES
+        description: Total cumulative messages received by the receiver
+        data_type: NUMBER
+        default_aggregation: max
+        
+      - name: aircraft_count
+        expr: COUNT(DISTINCT ICAO_HEX)
+        description: Count of unique aircraft
+        data_type: NUMBER
+        default_aggregation: sum
+        synonyms:
+          - number of aircraft
+          - plane count
+          - unique aircraft
+          
+      - name: observation_count
+        expr: COUNT(*)
+        description: Count of aircraft observations/records
+        data_type: NUMBER
+        default_aggregation: sum
+        synonyms:
+          - record count
+          - number of observations
+
+verified_queries:
+  - name: total_unique_aircraft
+    question: How many unique aircraft are in the data?
+    sql: |
+      SELECT COUNT(DISTINCT ICAO_HEX) AS unique_aircraft
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      
+  - name: aircraft_with_emergencies
+    question: Show me any aircraft with emergency status
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, EMERGENCY, SQUAWK, DATETIMESTAMP
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE EMERGENCY IS NOT NULL AND EMERGENCY != 'none'
+      ORDER BY DATETIMESTAMP DESC
+      
+  - name: highest_altitude_aircraft
+    question: What aircraft is flying at the highest altitude?
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, ALTITUDE_BARO, GROUND_SPEED, LATITUDE, LONGITUDE
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE ALTITUDE_BARO IS NOT NULL
+      ORDER BY ALTITUDE_BARO DESC
+      LIMIT 10
+      
+  - name: fastest_aircraft
+    question: What are the fastest aircraft by ground speed?
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, GROUND_SPEED, ALTITUDE_BARO, AIRCRAFT_TYPE
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE GROUND_SPEED IS NOT NULL
+      ORDER BY GROUND_SPEED DESC
+      LIMIT 10
+      
+  - name: aircraft_positions
+    question: Where are all the aircraft currently located?
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, LATITUDE, LONGITUDE, ALTITUDE_BARO, GROUND_SPEED, TRACK
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE LATITUDE IS NOT NULL AND LONGITUDE IS NOT NULL
+      ORDER BY DATETIMESTAMP DESC
+      
+  - name: climbing_aircraft
+    question: Which aircraft are currently climbing?
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, VERTICAL_RATE, ALTITUDE_BARO, NAV_ALTITUDE
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE VERTICAL_RATE > 0
+      ORDER BY VERTICAL_RATE DESC
+      
+  - name: descending_aircraft
+    question: Which aircraft are currently descending?
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, VERTICAL_RATE, ALTITUDE_BARO, NAV_ALTITUDE
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE VERTICAL_RATE < 0
+      ORDER BY VERTICAL_RATE ASC
+      
+  - name: heavy_aircraft
+    question: Show me all heavy or large aircraft
+    sql: |
+      SELECT ICAO_HEX, FLIGHT, CATEGORY, AIRCRAFT_TYPE, ALTITUDE_BARO, GROUND_SPEED
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE CATEGORY IN ('A3', 'A4', 'A5')
+      ORDER BY DATETIMESTAMP DESC
+      
+  - name: aircraft_by_category
+    question: How many aircraft are there by category?
+    sql: |
+      SELECT CATEGORY, COUNT(DISTINCT ICAO_HEX) AS aircraft_count
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE CATEGORY IS NOT NULL
+      GROUP BY CATEGORY
+      ORDER BY aircraft_count DESC
+      
+  - name: average_altitude_by_category
+    question: What is the average altitude by aircraft category?
+    sql: |
+      SELECT CATEGORY, 
+             AVG(ALTITUDE_BARO) AS avg_altitude,
+             AVG(GROUND_SPEED) AS avg_speed
+      FROM DEMO.DEMO.ADSB_AIRCRAFT_DATA
+      WHERE CATEGORY IS NOT NULL AND ALTITUDE_BARO IS NOT NULL
+      GROUP BY CATEGORY
+      ORDER BY avg_altitude DESC
